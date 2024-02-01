@@ -1,0 +1,65 @@
+CREATE DATABASE libreria;
+
+USE libreria;
+
+CREATE TABLE  usuarios(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100),
+    fechaCreacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	fechaActualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE autores(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombreAutores VARCHAR(100),
+    fechaCreacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	fechaActualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE  generos(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombreGeneros VARCHAR(100),
+    fechaCreacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	fechaActualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE  editoriales(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombreEditoriales VARCHAR(100),
+    fechaCreacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	fechaActualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE libros(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    titulo VARCHAR(100),
+    anoPublicacion INT,
+    autor_id INT,
+    genero_id INT,
+    editorial_id INT,
+    fechaCreacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	fechaActualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (autor_id) REFERENCES autores(id),
+    FOREIGN KEY (genero_id) REFERENCES generos(id),
+    FOREIGN KEY (editorial_id) REFERENCES editoriales(id)
+);
+
+CREATE TABLE  resenas(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    contenido VARCHAR(500),
+    libro_id INT,
+    usuario_id INT,
+    fechaCreacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	fechaActualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (libro_id) REFERENCES libros(id),
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+);
+
+----Consulta Especial
+SELECT libros.id, libros.titulo, autores.nombreAutores, generos.nombreGeneros, resenas.contenido, usuarios.nombre
+FROM libros
+LEFT JOIN autores ON libros.autor_id = autores.id
+LEFT JOIN generos ON libros.genero_id = generos.id
+lEFT JOIN resenas ON libros.id = resenas.libro_id
+LEFT JOIN usuarios ON resenas.usuario_id = usuarios.id
+
